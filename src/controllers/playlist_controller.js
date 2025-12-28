@@ -1,0 +1,7 @@
+//createPlaylist
+//getUserPlaylists
+//getPlaylistById
+//addVideoToPlaylist
+//removeVideoFromPlaylist
+//deletePlaylist
+//updatePlaylist
