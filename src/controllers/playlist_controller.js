@@ -200,7 +200,7 @@ const removeVideo = asyncHandler(async(req,res) => {
     const videos = await Playlist.findByIdAndUpdate(
         playlistId,
         {
-            $unset:{
+            $pullAll:{
                 videos:videoIds
             }
         },
