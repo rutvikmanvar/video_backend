@@ -8,7 +8,7 @@ router.use(verifyJWT);
 
 router.route('/add').post(addComment)
 
-router.route('/get').get(getComment)
+router.route('/get/:videoId').get(getComment)
 
 router.route('/update').patch(updateComment)
 

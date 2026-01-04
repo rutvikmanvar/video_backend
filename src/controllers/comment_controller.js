@@ -37,7 +37,8 @@ const addComment = asyncHandler(async(req,res) => {
 })
 
 const getComment = asyncHandler(async(req,res) => {
-    const {videoId} = req.body;
+    const {videoId} = req.params;
+    console.log('videoId = ',videoId)
     if(!mongoose.Types.ObjectId.isValid(videoId)) {
         throw new ApiError(400,'Video Id not valid')
     }
@@ -51,18 +52,19 @@ const getComment = asyncHandler(async(req,res) => {
 })
 
 const updateComment = asyncHandler(async(req,res) => {
-    const {videoId,commentId,content} = req.body;
-    if(!mongoose.Types.ObjectId.isValid(videoId)) {
-        throw new ApiError(400,'Video Id not valid')
-    }
+    const {commentId,content} = req.body;
     if(!mongoose.Types.ObjectId.isValid(commentId)) {
         throw new ApiError(400,'Comment not found')
+    }
+    const comment = await Comment.findById(commentId);
+    if(req.user._id.toString() !== comment.owner.toString()) {
+        throw new ApiError(400,'Is not your comment')
     }
     const comments = await Comment.findByIdAndUpdate(
         commentId,
         {
             $set:{
-                comment:content
+                content
             }
         },
         {
