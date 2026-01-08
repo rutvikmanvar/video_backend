@@ -107,7 +107,44 @@ const getFollowingDetails = asyncHandler(async(req,res) => {
 })
 
 const getFollowersDetails = asyncHandler(async(req,res) => {
+    const {userId} = req.body;
+    if(!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new ApiError(400,'User not exist')   
+    }
+
+    const followers = await Subscription.aggregate([
+        {
+            $match:{
+                channel: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup:{
+                from:'users',
+                localField:'subscribe',
+                foreignField:'_id',
+                as:'channelDetails'
+            }
+        },
+        {
+        $unwind: '$channelDetails'
+    },
+    // Step 2: Discard the Subscription info and keep ONLY the user info
+    {
+        $project: {
+            _id: '$channelDetails._id',       // Use the Channel's ID, not the Subscription ID
+            username: '$channelDetails.username',
+            fullName: '$channelDetails.fullName',
+            avatar: '$channelDetails.avatar'
+        }
+    }
+    ])
+
+    console.log('followers : ',followers)
     
+    return res.status(200).json(
+        new ApiResponse(200,followers,'floowers details')
+    )
 })
 
 export {
