@@ -89,6 +89,7 @@ const registerUser = asyncHandler(async (req, res) => {
     avatar: avatar.url,
     coverImage: cover?.url || "",
   });
+  
 
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
