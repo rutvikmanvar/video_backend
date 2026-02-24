@@ -109,6 +109,7 @@ const deleteVideo = asyncHandler(async(req,res) => {
     console.log('req.user?._id : ',req.user?._id)
     console.log('video.owner: ',video.owner)
 
+    
     if(req.user?._id.toString() !== video?.owner.toString()) {
         throw new ApiError(404,'You are not able to delete')
     }
